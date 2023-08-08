@@ -1,21 +1,21 @@
 import logging
-import pkg_resources
-
 from sqlite3 import OperationalError
+
+import pkg_resources
 
 from migrator.database.BaseDatabase import BaseDatabase
 
 logging.basicConfig(
-    filename='SQLite3Database.log',
+    filename="SQLite3Database.log",
     level=logging.INFO,
-    format='|'
-    '%(asctime)-18s|'
-    '%(levelname)-4s|'
-    '%(module)-18s|'
-    '%(filename)-18s:%(lineno)-4s|'
-    '%(funcName)-18s|'
-    '%(message)-32s|',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    format="|"
+    "%(asctime)-18s|"
+    "%(levelname)-4s|"
+    "%(module)-18s|"
+    "%(filename)-18s:%(lineno)-4s|"
+    "%(funcName)-18s|"
+    "%(message)-32s|",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 
@@ -27,8 +27,9 @@ class SQLite3Database(BaseDatabase):
     cnxn : database server connection
         Connection to the database.
     """
+
     def __init__(self, cnxn):
-        logging.info('Creating database object')
+        logging.info("Creating database object")
         self.cnxn = cnxn
         self.__migrations_run()
 
@@ -44,12 +45,12 @@ class SQLite3Database(BaseDatabase):
         -------
         None
         """
-        logging.info('Creating _migrationsrun table')
+        logging.info("Creating _migrationsrun table")
 
         # open sql file
-        path = 'sqlite3/_MigrationsRun.sql'
+        path = "sqlite3/_MigrationsRun.sql"
         filepath = pkg_resources.resource_filename(__name__, path)
-        f = open(filepath, 'r')
+        f = open(filepath, "r")
 
         cursor = self.cnxn.cursor()
 
@@ -88,11 +89,13 @@ class SQLite3Database(BaseDatabase):
         cursor = self.cnxn.cursor()
 
         # build sql query to determine if migration has been run
-        sql = '''
+        sql = """
             SELECT      COUNT(1)
             FROM        _MigrationsRun
             WHERE       Migration = '{m}'
-        '''.format(m=migration)
+        """.format(
+            m=migration
+        )
 
         # run the sql query
         cursor.execute(sql)
@@ -121,7 +124,7 @@ class SQLite3Database(BaseDatabase):
         cursor = self.cnxn.cursor()
 
         # build sql query to update _MigrationsRun
-        sql = '''
+        sql = """
             INSERT INTO _MigrationsRun
             (
                 Migration
@@ -132,7 +135,9 @@ class SQLite3Database(BaseDatabase):
                 '{m}'
                 ,DATETIME('now')
             )
-        '''.format(m=migration)
+        """.format(
+            m=migration
+        )
 
         try:
             # run the sql query
@@ -140,7 +145,5 @@ class SQLite3Database(BaseDatabase):
             self.cnxn.commit()
 
         except OperationalError:
-            logging.error('Problem updating _MigrationsRun for {m}'.format(
-                m=migration
-            ))
+            logging.error("Problem updating _MigrationsRun for {m}".format(m=migration))
             raise OperationalError

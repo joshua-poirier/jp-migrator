@@ -2,22 +2,21 @@ import inspect
 import logging
 
 logging.basicConfig(
-    filename='BaseDatabase.log',
+    filename="BaseDatabase.log",
     level=logging.INFO,
-    format='|'
-    '%(asctime)-18s|'
-    '%(levelname)-4s|'
-    '%(module)-18s|'
-    '%(filename)-18s:%(lineno)-4s|'
-    '%(funcName)-18s|'
-    '%(message)-32s|',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    format="|"
+    "%(asctime)-18s|"
+    "%(levelname)-4s|"
+    "%(module)-18s|"
+    "%(filename)-18s:%(lineno)-4s|"
+    "%(funcName)-18s|"
+    "%(message)-32s|",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 
 class BaseDatabase:
-    """Base database class for all database types.
-    """
+    """Base database class for all database types."""
 
     @classmethod
     def _get_param_names(cls):
@@ -33,7 +32,7 @@ class BaseDatabase:
             List of the class parameters.
         """
         # fetch the constructor
-        init = getattr(cls.__init__, 'Database Class', cls.__init__)
+        init = getattr(cls.__init__, "Database Class", cls.__init__)
 
         if init is object.__init__:
             # no constructor to inspect
@@ -41,20 +40,19 @@ class BaseDatabase:
         else:
             # inspect constructor
             sig = inspect.signature(init)
-            parameters = [p for p in sig.parameters.values()
-                          if p.name != 'self' and
-                          p.kind != p.VAR_KEYWORD]
+            parameters = [
+                p
+                for p in sig.parameters.values()
+                if p.name != "self" and p.kind != p.VAR_KEYWORD
+            ]
 
             for p in parameters:
                 if p.kind == p.VAR_POSITIONAL:
                     raise RuntimeError(
-                        'Database objects should always specify their '
-                        'parameters in the signature of their __init__. '
-                        '{class_} with constructor {signature} does not follow '
-                        'this convention.'.format(
-                            class_=cls,
-                            signature=sig
-                        )
+                        "Database objects should always specify their "
+                        "parameters in the signature of their __init__. "
+                        "{class_} with constructor {signature} does not follow "
+                        "this convention.".format(class_=cls, signature=sig)
                     )
 
             # Extract and sort argument names excluding 'self'
@@ -134,7 +132,7 @@ class BaseDatabase:
         None
         """
         # read the migration script
-        f = open(migration, 'r')
+        f = open(migration, "r")
         sql = f.read()
 
         # run the migration script

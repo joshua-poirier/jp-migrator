@@ -1,23 +1,22 @@
 import logging
-import pymssql
 
+import pymssql
 from pymssql import OperationalError
 
-from migrator.server.BaseServer import BaseServer
 from migrator.database.SQLServerDatabase import SQLServerDatabase
-
+from migrator.server.BaseServer import BaseServer
 
 logging.basicConfig(
-    filename='SQLServerDatabase.log',
+    filename="SQLServerDatabase.log",
     level=logging.INFO,
-    format='|'
-    '%(asctime)-18s|'
-    '%(levelname)-4s|'
-    '%(module)-18s|'
-    '%(filename)-18s:%(lineno)-4s|'
-    '%(funcName)-18s|'
-    '%(message)-32s|',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    format="|"
+    "%(asctime)-18s|"
+    "%(levelname)-4s|"
+    "%(module)-18s|"
+    "%(filename)-18s:%(lineno)-4s|"
+    "%(funcName)-18s|"
+    "%(message)-32s|",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 
@@ -45,15 +44,9 @@ class SQLServer(BaseServer):
     cnxn : Database connection object
         Connection to the SQL Server database.
     """
-    def __init__(
-        self,
-        server,
-        port,
-        user,
-        password,
-        dbname='master'
-    ):
-        logging.info('Creating SQL Server server object')
+
+    def __init__(self, server, port, user, password, dbname="master"):
+        logging.info("Creating SQL Server server object")
 
         self.server = server
         self.port = port
@@ -66,10 +59,10 @@ class SQLServer(BaseServer):
 
     def __del__(self):
         try:
-            logging.info('Closing database connection')
+            logging.info("Closing database connection")
             self.cnxn.close()
         except AttributeError:
-            logging.warning('Unable to close connection')
+            logging.warning("Unable to close connection")
 
     def __establish_connection(self):
         """Retrieve connection to the SQL Server database server.
@@ -83,7 +76,7 @@ class SQLServer(BaseServer):
         cnxn : connection object
             Open connection to the SQL Server database server.
         """
-        logging.info('Establishing server connection')
+        logging.info("Establishing server connection")
 
         try:
             cnxn = pymssql.connect(
@@ -91,21 +84,21 @@ class SQLServer(BaseServer):
                 port=self.port,
                 user=self.user,
                 password=self.password,
-                database=self.dbname
+                database=self.dbname,
             )
 
         except OperationalError:
-            logging.warning('Unable to connect, trying system database ...')
+            logging.warning("Unable to connect, trying system database ...")
 
             base_cnxn = pymssql.connect(
                 server=self.server,
                 port=self.port,
                 user=self.user,
                 password=self.password,
-                database='master'
+                database="master",
             )
 
-            logging.info('Connection to system database established, creating database')
+            logging.info("Connection to system database established, creating database")
 
             # attempt to create database
             SQLServerDatabase(base_cnxn, self.dbname)
@@ -117,7 +110,7 @@ class SQLServer(BaseServer):
                 port=self.port,
                 user=self.user,
                 password=self.password,
-                database=self.dbname
+                database=self.dbname,
             )
 
         return cnxn

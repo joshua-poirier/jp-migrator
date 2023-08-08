@@ -1,19 +1,20 @@
 import logging
+
 import pkg_resources
 
 from migrator.database.BaseDatabase import BaseDatabase
 
 logging.basicConfig(
-    filename='MySQLServerDatabase.log',
+    filename="MySQLServerDatabase.log",
     level=logging.INFO,
-    format='|'
-    '%(asctime)-18s|'
-    '%(levelname)-4s|'
-    '%(module)-18s|'
-    '%(filename)-18s:%(lineno)-4s|'
-    '%(funcName)-18s|'
-    '%(message)-32s|',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    format="|"
+    "%(asctime)-18s|"
+    "%(levelname)-4s|"
+    "%(module)-18s|"
+    "%(filename)-18s:%(lineno)-4s|"
+    "%(funcName)-18s|"
+    "%(message)-32s|",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 
@@ -28,8 +29,9 @@ class MySQLDatabase(BaseDatabase):
     dbname : str
         Name of the database to be created.
     """
+
     def __init__(self, cnxn, dbname: str):
-        logging.info('Creating MySQL database object')
+        logging.info("Creating MySQL database object")
         self.cnxn = cnxn
         self.dbname = dbname
 
@@ -50,8 +52,8 @@ class MySQLDatabase(BaseDatabase):
         None
         """
         # build query and open cursor
-        logging.info('Creating MySQL database if it does not exist')
-        sql = f'CREATE DATABASE IF NOT EXISTS {self.dbname};'
+        logging.info("Creating MySQL database if it does not exist")
+        sql = f"CREATE DATABASE IF NOT EXISTS {self.dbname};"
 
         # create the database
         cursor = self.cnxn.cursor()
@@ -75,12 +77,12 @@ class MySQLDatabase(BaseDatabase):
         -------
         None
         """
-        logging.info('Create _MigrationsRun table')
+        logging.info("Create _MigrationsRun table")
 
         # open sql file
-        path = 'mysql/_MigrationsRun.sql'
+        path = "mysql/_MigrationsRun.sql"
         filepath = pkg_resources.resource_filename(__name__, path)
-        f = open(filepath, 'r')
+        f = open(filepath, "r")
 
         cursor = self.cnxn.cursor()
         cursor._defer_warnings = True
@@ -107,19 +109,19 @@ class MySQLDatabase(BaseDatabase):
         -------
         None
         """
-        logging.info('Create _CheckMigration function')
+        logging.info("Create _CheckMigration function")
 
         # open sql file
-        path = 'mysql/_CheckMigration.sql'
+        path = "mysql/_CheckMigration.sql"
         filepath = pkg_resources.resource_filename(__name__, path)
-        f = open(filepath, 'r')
+        f = open(filepath, "r")
 
         cursor = self.cnxn.cursor()
         cursor._defer_warnings = True
 
         # run sql command
         sql = f.read()
-        cursor.execute('DROP FUNCTION IF EXISTS _Check_Migration;')
+        cursor.execute("DROP FUNCTION IF EXISTS _Check_Migration;")
         cursor.execute(sql)
         self.cnxn.commit()
 
@@ -139,19 +141,19 @@ class MySQLDatabase(BaseDatabase):
         -------
         None
         """
-        logging.info('Create _Insert_MigrationsRun stored procedure')
+        logging.info("Create _Insert_MigrationsRun stored procedure")
 
         # open sql file
-        path = 'mysql/_InsertMigrationsRun.sql'
+        path = "mysql/_InsertMigrationsRun.sql"
         filepath = pkg_resources.resource_filename(__name__, path)
-        f = open(filepath, 'r')
+        f = open(filepath, "r")
 
         cursor = self.cnxn.cursor()
         cursor._defer_warnings = True
 
         # run sql command
         sql = f.read()
-        cursor.execute('DROP PROCEDURE IF EXISTS _Insert_MigrationsRun;')
+        cursor.execute("DROP PROCEDURE IF EXISTS _Insert_MigrationsRun;")
         cursor.execute(sql)
         self.cnxn.commit()
 

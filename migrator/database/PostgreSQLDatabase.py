@@ -1,21 +1,21 @@
 import logging
-import pkg_resources
 
+import pkg_resources
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 from migrator.database.BaseDatabase import BaseDatabase
 
 logging.basicConfig(
-    filename='PostgreSQLDatabase.log',
+    filename="PostgreSQLDatabase.log",
     level=logging.INFO,
-    format='|'
-    '%(asctime)-18s|'
-    '%(levelname)-4s|'
-    '%(module)-18s|'
-    '%(filename)-18s:%(lineno)-4s|'
-    '%(funcName)-18s|'
-    '%(message)-32s|',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    format="|"
+    "%(asctime)-18s|"
+    "%(levelname)-4s|"
+    "%(module)-18s|"
+    "%(filename)-18s:%(lineno)-4s|"
+    "%(funcName)-18s|"
+    "%(message)-32s|",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 
@@ -30,8 +30,9 @@ class PostgreSQLDatabase(BaseDatabase):
     dbname : str
         Name of the database to be created.
     """
+
     def __init__(self, cnxn, dbname: str):
-        logging.info('Creating PostgreSQL database object')
+        logging.info("Creating PostgreSQL database object")
         self.cnxn = cnxn
         self.dbname = dbname
         self.__create_database()
@@ -55,8 +56,8 @@ class PostgreSQLDatabase(BaseDatabase):
         cnxn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
         # build query and open cursor
-        logging.info('Creating PostgreSQL database if does not exist')
-        sql = 'CREATE DATABASE IF NOT EXISTS {db}'.format(db=self.dbname)
+        logging.info("Creating PostgreSQL database if does not exist")
+        sql = "CREATE DATABASE IF NOT EXISTS {db}".format(db=self.dbname)
         cursor = cnxn.cursor()
 
         # create the database
@@ -78,12 +79,12 @@ class PostgreSQLDatabase(BaseDatabase):
         -------
         None
         """
-        logging.info('Create _migrationsrun table')
+        logging.info("Create _migrationsrun table")
 
         # open sql file
-        path = 'postgresql/_MigrationsRun.sql'
+        path = "postgresql/_MigrationsRun.sql"
         filepath = pkg_resources.resource_filename(__name__, path)
-        f = open(filepath, 'r')
+        f = open(filepath, "r")
 
         cursor = self.cnxn.cursor()
 
@@ -109,12 +110,12 @@ class PostgreSQLDatabase(BaseDatabase):
         -------
         None
         """
-        logging.info('Create _checkmigration function')
+        logging.info("Create _checkmigration function")
 
         # open sql file
-        path = 'postgresql/_CheckMigration.sql'
+        path = "postgresql/_CheckMigration.sql"
         filepath = pkg_resources.resource_filename(__name__, path)
-        f = open(filepath, 'r')
+        f = open(filepath, "r")
 
         cursor = self.cnxn.cursor()
 
@@ -139,12 +140,12 @@ class PostgreSQLDatabase(BaseDatabase):
         -------
         None
         """
-        logging.info('Create _insert_migrationsrun stored procedure')
+        logging.info("Create _insert_migrationsrun stored procedure")
 
         # open sql file
-        path = 'postgresql/_InsertMigrationsRun.sql'
+        path = "postgresql/_InsertMigrationsRun.sql"
         filepath = pkg_resources.resource_filename(__name__, path)
-        f = open(filepath, 'r')
+        f = open(filepath, "r")
 
         cursor = self.cnxn.cursor()
 

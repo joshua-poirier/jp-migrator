@@ -1,19 +1,20 @@
 import logging
+
 import pkg_resources
 
 from migrator.database.BaseDatabase import BaseDatabase
 
 logging.basicConfig(
-    filename='SQLServerDatabase.log',
+    filename="SQLServerDatabase.log",
     level=logging.INFO,
-    format='|'
-    '%(asctime)-18s|'
-    '%(levelname)-4s|'
-    '%(module)-18s|'
-    '%(filename)-18s:%(lineno)-4s|'
-    '%(funcName)-18s|'
-    '%(message)-32s|',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    format="|"
+    "%(asctime)-18s|"
+    "%(levelname)-4s|"
+    "%(module)-18s|"
+    "%(filename)-18s:%(lineno)-4s|"
+    "%(funcName)-18s|"
+    "%(message)-32s|",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 
@@ -28,8 +29,9 @@ class SQLServerDatabase(BaseDatabase):
     dbname : str
         Name of the database to be created.
     """
+
     def __init__(self, cnxn, dbname: str):
-        logging.info('Creating SQL Server database object')
+        logging.info("Creating SQL Server database object")
         self.cnxn = cnxn
         self.dbname = dbname
 
@@ -53,8 +55,8 @@ class SQLServerDatabase(BaseDatabase):
         cnxn = self.cnxn
 
         # build query and open cursor
-        logging.info('Creating SQL Server database if does not exist')
-        sql = f'''
+        logging.info("Creating SQL Server database if does not exist")
+        sql = f"""
             IF NOT EXISTS
             (
                 SELECT      1
@@ -62,7 +64,7 @@ class SQLServerDatabase(BaseDatabase):
                 WHERE       NAME = '{self.dbname}'
             )
                 CREATE DATABASE {self.dbname}
-        '''
+        """
 
         # create the database
         cnxn.autocommit(True)
@@ -85,12 +87,12 @@ class SQLServerDatabase(BaseDatabase):
         -------
         None
         """
-        logging.info('Create _MigrationsRun table')
+        logging.info("Create _MigrationsRun table")
 
         # open sql file
-        path = 'sqlserver/_MigrationsRun.sql'
+        path = "sqlserver/_MigrationsRun.sql"
         filepath = pkg_resources.resource_filename(__name__, path)
-        f = open(filepath, 'r')
+        f = open(filepath, "r")
 
         cursor = self.cnxn.cursor()
 
@@ -116,12 +118,12 @@ class SQLServerDatabase(BaseDatabase):
         -------
         None
         """
-        logging.info('Create _CheckMigration function')
+        logging.info("Create _CheckMigration function")
 
         # open sql file
-        path = 'sqlserver/_CheckMigration.sql'
+        path = "sqlserver/_CheckMigration.sql"
         filepath = pkg_resources.resource_filename(__name__, path)
-        f = open(filepath, 'r')
+        f = open(filepath, "r")
 
         cursor = self.cnxn.cursor()
 
@@ -146,12 +148,12 @@ class SQLServerDatabase(BaseDatabase):
         -------
         None
         """
-        logging.info('Create _Insert_MigrationsRun stored procedure')
+        logging.info("Create _Insert_MigrationsRun stored procedure")
 
         # open sql file
-        path = 'sqlserver/_InsertMigrationsRun.sql'
+        path = "sqlserver/_InsertMigrationsRun.sql"
         filepath = pkg_resources.resource_filename(__name__, path)
-        f = open(filepath, 'r')
+        f = open(filepath, "r")
 
         cursor = self.cnxn.cursor()
 

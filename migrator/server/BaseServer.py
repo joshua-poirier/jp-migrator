@@ -4,8 +4,7 @@ from migrator.database.BaseDatabase import BaseDatabase
 
 
 class BaseServer:
-    """Base server class for all database server types.
-    """
+    """Base server class for all database server types."""
 
     @classmethod
     def _get_param_names(cls):
@@ -21,7 +20,7 @@ class BaseServer:
             List of the class parameters.
         """
         # fetch the constructor
-        init = getattr(cls.__init__, 'Server Class', cls.__init__)
+        init = getattr(cls.__init__, "Server Class", cls.__init__)
 
         if init is object.__init__:
             # no constructor to inspect
@@ -29,20 +28,19 @@ class BaseServer:
         else:
             # inspect constructor
             sig = inspect.signature(init)
-            parameters = [p for p in sig.parameters.values()
-                          if p.name != 'self' and
-                          p.kind != p.VAR_KEYWORD]
+            parameters = [
+                p
+                for p in sig.parameters.values()
+                if p.name != "self" and p.kind != p.VAR_KEYWORD
+            ]
 
             for p in parameters:
                 if p.kind == p.VAR_POSITIONAL:
                     raise RuntimeError(
-                        'Server objects should always specify their '
-                        'parameters in the signature of their __init__. '
-                        '{class_} with constructor {signature} does not follow '
-                        'this convention.'.format(
-                            class_=cls,
-                            signature=sig
-                        )
+                        "Server objects should always specify their "
+                        "parameters in the signature of their __init__. "
+                        "{class_} with constructor {signature} does not follow "
+                        "this convention.".format(class_=cls, signature=sig)
                     )
 
             # Extract and sort argument names excluding 'self'
