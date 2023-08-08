@@ -1,20 +1,20 @@
 import logging
 import sqlite3
 
-from migrator.server.BaseServer import BaseServer
 from migrator.database.SQLite3Database import SQLite3Database
+from migrator.server.BaseServer import BaseServer
 
 logging.basicConfig(
-    filename='SQLite3Database.log',
+    filename="SQLite3Database.log",
     level=logging.INFO,
-    format='|'
-    '%(asctime)-18s|'
-    '%(levelname)-4s|'
-    '%(module)-18s|'
-    '%(filename)-18s:%(lineno)-4s|'
-    '%(funcName)-18s|'
-    '%(message)-32s|',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    format="|"
+    "%(asctime)-18s|"
+    "%(levelname)-4s|"
+    "%(module)-18s|"
+    "%(filename)-18s:%(lineno)-4s|"
+    "%(funcName)-18s|"
+    "%(message)-32s|",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 
@@ -32,14 +32,15 @@ class SQLite3Server(BaseServer):
     cnxn : database connection object
         Connection to the SQLite3 database.
     """
+
     def __init__(self, dbname):
-        logging.info('Creating SQLite3 Server')
+        logging.info("Creating SQLite3 Server")
         self.dbname = dbname
         self.cnxn = self.__establish_connection()
         self.database = SQLite3Database(self.cnxn)
 
     def __del__(self):
-        logging.info('Closing server connection')
+        logging.info("Closing server connection")
         self.cnxn.close()
 
     def __establish_connection(self):
@@ -54,10 +55,8 @@ class SQLite3Server(BaseServer):
         cnxn : connection object
             Open connection to the SQLite3 database server.
         """
-        logging.info('Establishing server connection')
+        logging.info("Establishing server connection")
 
-        cnxn = sqlite3.connect(
-            database='{database}.db'.format(database=self.dbname)
-        )
+        cnxn = sqlite3.connect(database="{database}.db".format(database=self.dbname))
 
         return cnxn

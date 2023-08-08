@@ -1,21 +1,21 @@
 import logging
+
 import pymysql
 
-from migrator.server.BaseServer import BaseServer
 from migrator.database.MySQLDatabase import MySQLDatabase
-
+from migrator.server.BaseServer import BaseServer
 
 logging.basicConfig(
-    filename='MySQLServerDatabase.log',
+    filename="MySQLServerDatabase.log",
     level=logging.INFO,
-    format='|'
-    '%(asctime)-18s|'
-    '%(levelname)-4s|'
-    '%(module)-18s|'
-    '%(filename)-18s:%(lineno)-4s|'
-    '%(funcName)-18s|'
-    '%(message)-32s|',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    format="|"
+    "%(asctime)-18s|"
+    "%(levelname)-4s|"
+    "%(module)-18s|"
+    "%(filename)-18s:%(lineno)-4s|"
+    "%(funcName)-18s|"
+    "%(message)-32s|",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 
@@ -43,15 +43,9 @@ class MySQLServer(BaseServer):
     cnxn : Database connection object
         Connection to the MySQL database.
     """
-    def __init__(
-        self,
-        server,
-        port,
-        user,
-        password,
-        dbname=None
-    ):
-        logging.info('Creating MySQL server object')
+
+    def __init__(self, server, port, user, password, dbname=None):
+        logging.info("Creating MySQL server object")
 
         self.server = server
         self.port = port
@@ -64,10 +58,10 @@ class MySQLServer(BaseServer):
 
     def __del__(self):
         try:
-            logging.info('Closing database connection')
+            logging.info("Closing database connection")
             self.cnxn.close()
         except AttributeError:
-            logging.warning('Unable to close connection')
+            logging.warning("Unable to close connection")
 
     def __establish_connection(self):
         """Retrieve connection to the MySQL Server database server.
@@ -81,7 +75,7 @@ class MySQLServer(BaseServer):
         cnxn : connection object
             Open connection to the MySQL Server database server.
         """
-        logging.info('Establishing server connection')
+        logging.info("Establishing server connection")
 
         # connect to the server, without a database in mind
         cnxn = pymysql.connect(
@@ -89,7 +83,7 @@ class MySQLServer(BaseServer):
             port=self.port,
             user=self.user,
             password=self.password,
-            charset='utf8mb4'
+            charset="utf8mb4",
         )
 
         return cnxn

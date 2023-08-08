@@ -1,24 +1,24 @@
 import logging
 import os
-import psycopg2
 
+import psycopg2
 from psycopg2 import OperationalError
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-from migrator.server.BaseServer import BaseServer
 from migrator.database.PostgreSQLDatabase import PostgreSQLDatabase
+from migrator.server.BaseServer import BaseServer
 
 logging.basicConfig(
-    filename='PostgreSQLDatabase.log',
+    filename="PostgreSQLDatabase.log",
     level=logging.INFO,
-    format='|'
-    '%(asctime)-18s|'
-    '%(levelname)-4s|'
-    '%(module)-18s|'
-    '%(filename)-18s:%(lineno)-4s|'
-    '%(funcName)-18s|'
-    '%(message)-32s|',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    format="|"
+    "%(asctime)-18s|"
+    "%(levelname)-4s|"
+    "%(module)-18s|"
+    "%(filename)-18s:%(lineno)-4s|"
+    "%(funcName)-18s|"
+    "%(message)-32s|",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 
@@ -46,15 +46,16 @@ class PostgreSQLServer(BaseServer):
     cnxn : Database connection object
         Connection to the PostgreSQL database.
     """
+
     def __init__(
         self,
-        user=os.getenv('USER'),
+        user=os.getenv("USER"),
         password=None,
-        host='localhost',
-        port='5432',
-        dbname='postgres'
+        host="localhost",
+        port="5432",
+        dbname="postgres",
     ):
-        logging.info('Creating PostgreSQL Server object')
+        logging.info("Creating PostgreSQL Server object")
 
         self.user = user
         self.password = password
@@ -66,10 +67,10 @@ class PostgreSQLServer(BaseServer):
 
     def __del__(self):
         try:
-            logging.info('Closing database connection')
+            logging.info("Closing database connection")
             self.cnxn.close()
         except AttributeError:
-            logging.warning('Unable to close connection')
+            logging.warning("Unable to close connection")
 
     def __establish_connection(self):
         """Retrieve connection to the PostgreSQL database server.
@@ -84,17 +85,17 @@ class PostgreSQLServer(BaseServer):
             Open connection to the PostgreSQL database server.
         """
         try:
-            logging.info('Connecting to database server')
+            logging.info("Connecting to database server")
 
             cnxn = psycopg2.connect(
                 user=self.user,
                 password=self.password,
                 host=self.host,
                 port=self.port,
-                database=self.dbname
+                database=self.dbname,
             )
         except OperationalError:
-            logging.warning('Unable to connect, trying system database ...')
+            logging.warning("Unable to connect, trying system database ...")
 
             # attempt to create database by connecting to system database
             base_cnxn = psycopg2.connect(
@@ -102,10 +103,10 @@ class PostgreSQLServer(BaseServer):
                 password=self.password,
                 host=self.host,
                 port=self.port,
-                database='postgres'
+                database="postgres",
             )
 
-            logging.info('Connection to system database established, creating database')
+            logging.info("Connection to system database established, creating database")
 
             # attempt to create database
             PostgreSQLDatabase(base_cnxn, self.dbname)
@@ -117,7 +118,7 @@ class PostgreSQLServer(BaseServer):
                 password=self.password,
                 host=self.host,
                 port=self.port,
-                database=self.dbname
+                database=self.dbname,
             )
 
         cnxn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
